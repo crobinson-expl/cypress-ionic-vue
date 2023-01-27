@@ -23,6 +23,12 @@ import './commands'
 import '@/assets/main.css'
 
 import { mount } from 'cypress/vue'
+import { IonicVue, IonPage } from "@ionic/vue"
+// @ts-ignore: Could not find a declaration file for module
+import { defineComponent } from "vue/dist/vue.esm-bundler"
+
+type MountParams = Parameters<typeof mount>
+type OptionsParam = MountParams[1]
 
 // Augment the Cypress namespace to include type definitions for
 // your custom command.
@@ -31,12 +37,48 @@ import { mount } from 'cypress/vue'
 declare global {
   namespace Cypress {
     interface Chainable {
-      mount: typeof mount
+      /**
+       * Helper mount function for Vue Components
+       * @param component Vue Component or JSX Element to mount
+       * @param options Options passed to Vue Test Utils
+       */
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      mount(component: any, options?: OptionsParam): Chainable<any>
     }
   }
 }
 
-Cypress.Commands.add('mount', mount)
+Cypress.Commands.add("mount", (componentToMount, options = {}) => {
+  // Setup options object
+  options.global = options.global || {};
+  options.global.plugins = options.global.plugins || [];
+
+  options.global.plugins.push(IonicVue);
+
+  const IonicWrapper = defineComponent({
+      setup() {
+          const props = options.props || {};
+
+          return {
+              props,
+              comp: componentToMount,
+          };
+      },
+      components: {
+          IonPage,
+      },
+      template: `
+          <IonPage>
+              <component :is="comp" v-bind="props" />
+          </IonPage>
+      `,
+  });
+
+  // Do not pass props to wrapper
+  const wrapperOptions = { ...options, props: {} };
+
+  return mount(IonicWrapper, wrapperOptions);
+})
 
 // Example use:
 // cy.mount(MyComponent)
