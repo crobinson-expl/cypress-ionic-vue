@@ -1,7 +1,13 @@
+<script setup lang="ts">
+import { IonPage } from "@ionic/vue";
+</script>
+
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
+  <IonPage>
+    <div class="about">
+      <h1>This is an about page</h1>
+    </div>
+  </IonPage>
 </template>
 
 <style>
