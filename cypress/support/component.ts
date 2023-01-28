@@ -27,9 +27,6 @@ import { IonicVue, IonApp, IonPage } from "@ionic/vue"
 // @ts-ignore: Could not find a declaration file for module
 import { defineComponent } from "vue/dist/vue.esm-bundler"
 
-type MountParams = Parameters<typeof mount>
-type OptionsParam = MountParams[1]
-
 // Augment the Cypress namespace to include type definitions for
 // your custom command.
 // Alternatively, can be defined in cypress/support/component.d.ts
@@ -37,13 +34,7 @@ type OptionsParam = MountParams[1]
 declare global {
   namespace Cypress {
     interface Chainable {
-      /**
-       * Helper mount function for Vue Components
-       * @param component Vue Component or JSX Element to mount
-       * @param options Options passed to Vue Test Utils
-       */
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      mount(component: any, options?: OptionsParam): Chainable<any>
+      mount: typeof mount
     }
   }
 }
