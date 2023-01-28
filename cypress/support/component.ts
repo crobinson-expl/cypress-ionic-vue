@@ -23,7 +23,7 @@ import './commands'
 import '@/assets/main.css'
 
 import { mount } from 'cypress/vue'
-import { IonicVue, IonPage } from "@ionic/vue"
+import { IonicVue, IonApp, IonPage } from "@ionic/vue"
 // @ts-ignore: Could not find a declaration file for module
 import { defineComponent } from "vue/dist/vue.esm-bundler"
 
@@ -56,22 +56,27 @@ Cypress.Commands.add("mount", (componentToMount, options = {}) => {
   options.global.plugins.push(IonicVue);
 
   const IonicWrapper = defineComponent({
-      setup() {
-          const props = options.props || {};
+    setup() {
+      const props = options.props || {};
 
-          return {
-              props,
-              comp: componentToMount,
-          };
-      },
-      components: {
-          IonPage,
-      },
-      template: `
+      return {
+        props,
+        comp: componentToMount,
+      };
+    },
+    components: {
+      IonApp,
+      IonPage,
+    },
+    template: `
+      <div id="app">
+        <IonApp>
           <IonPage>
-              <component :is="comp" v-bind="props" />
+            <component :is="comp" v-bind="props" />
           </IonPage>
-      `,
+        </IonApp>
+      </div>
+    `,
   });
 
   // Do not pass props to wrapper
